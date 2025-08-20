@@ -12,10 +12,12 @@ class Square(pg.sprite.Sprite):
         self.y = y
         self.color = color
         self.size = size
-        
-    def update(self, dt):
-        # Update logic for the square can be added here
-        pass
 
     def draw(self, surface):
         pass
+        
+    def update(self):
+        # Update logic for the square can be added here
+        pass
+
+    
