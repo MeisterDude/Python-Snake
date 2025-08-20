@@ -1,10 +1,8 @@
 
 import pygame as pg
 
-#from square import Square
-from constants import BOARD_SIZE, GROWTH, SIZE_SQUARE
+from constants import BOARD_SIZE, GROWTH
 from board import board_to_screen
-#from snakepart import SnakePart
 
 
 class SnakePart():
@@ -25,6 +23,7 @@ class Snake(pg.sprite.Sprite):
         self.color = color
         self.direction = (0, -1)  # Initial direction (up)
         self.next = None
+        self.growing = 0
         self.start_pos()
         
     def start_pos(self):
@@ -38,7 +37,6 @@ class Snake(pg.sprite.Sprite):
             next_part = next_part.next
 
     def draw(self, screen):
-        # Draw the snake as a rectangle
         x, y = board_to_screen(self.pos, self.size)
         pg.draw.rect(screen, self.color, (x, y, self.size, self.size))
         next_part = self.next
@@ -51,8 +49,7 @@ class Snake(pg.sprite.Sprite):
                 pg.draw.rect(screen, self.color, (x, y, self.size / 2, self.size / 2))
             next_part = next_part.next
 
-
-    def move(self, growing = 0):
+    def move(self):
         old_pos = self.pos
         self.pos = (self.pos[0] + self.direction[0], self.pos[1] + self.direction[1])
         next_part = self.next
@@ -60,19 +57,23 @@ class Snake(pg.sprite.Sprite):
             tmp = next_part.pos
             next_part.pos = old_pos
             old_pos = tmp
+            if (not next_part.next) and self.growing > 0:
+                next_part.next = SnakePart(old_pos)
+                self.growing -= 1
+                return
             next_part = next_part.next
 
-    def collision(self):
+    def collision(self, pos):
         next_part = self.next
         while next_part:
-            if next_part.pos == self.pos:
+            if next_part.pos == pos:
                 return True
             next_part = next_part.next
         return False
 
     def eat(self, pos):
         if self.pos == pos:
-            self.length += GROWTH
+            self.growing += GROWTH
             return True
         return False
 

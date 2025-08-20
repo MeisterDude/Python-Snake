@@ -1,7 +1,6 @@
 
 import pygame as pg
 
-#from square import Square
 from constants import SIZE_SQUARE
 from board import board_to_screen
 

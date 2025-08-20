@@ -21,7 +21,10 @@ def main():
     Apple.containers = drawable
 
     snake = Snake(START_POS, SIZE_SNAKE, START_LENGTH, COLOR_SNAKE)
-    apple = Apple((random.randint(0, BOARD_SIZE[0] - 1), random.randint(0, BOARD_SIZE[1] - 1)), SIZE_APPLE, COLOR_APPLE)
+    pos = (random.randint(0, BOARD_SIZE[0] - 1), random.randint(0, BOARD_SIZE[1] - 1))
+    while snake.pos == pos or snake.collision(pos):
+        pos = (random.randint(0, BOARD_SIZE[0] - 1), random.randint(0, BOARD_SIZE[1] - 1))
+    apple = Apple(pos, SIZE_APPLE, COLOR_APPLE)
 
     running = True
     while running:
@@ -36,14 +39,22 @@ def main():
             pg.draw.line(screen, (100, 100, 100), (i * (SIZE_SQUARE + 1), 0), (i * (SIZE_SQUARE + 1), SCREEN_HEIGHT))
 
         updatable.update()
-        for sprite in drawable:
-            sprite.draw(screen)
-        if snake.collision():
+        
+        if snake.collision(snake.pos):
             print("OUCH!")
             return
         if snake.out_of_board():
             print("OUCH!")
             return
+        if snake.eat(apple.pos):
+            apple.kill()
+            pos = (random.randint(0, BOARD_SIZE[0] - 1), random.randint(0, BOARD_SIZE[1] - 1))
+            while snake.pos == pos or snake.collision(pos):
+                pos = (random.randint(0, BOARD_SIZE[0] - 1), random.randint(0, BOARD_SIZE[1] - 1))
+            apple = Apple(pos, SIZE_APPLE, COLOR_APPLE)
+
+        for sprite in drawable:
+            sprite.draw(screen)
         
         pg.display.flip()  # Update the display
         clock.tick(GAME_SPEED)
