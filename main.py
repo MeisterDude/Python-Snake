@@ -38,6 +38,9 @@ def main():
         updatable.update()
         for sprite in drawable:
             sprite.draw(screen)
+        if snake.collision():
+            print("OUCH!")
+            return
         if snake.out_of_board():
             print("OUCH!")
             return
